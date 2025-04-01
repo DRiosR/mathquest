@@ -1,5 +1,5 @@
-import { supabase } from "../../../lib/supabase";
-import prisma from "../../../lib/prisma";
+import { supabase } from "../../../../lib/supabase";
+import prisma from "../../../../lib/prismas";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
