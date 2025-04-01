@@ -1,4 +1,4 @@
-import { supabase } from "../../../../lib/superbase";
+import { supabase } from "../../../../lib/supabase";
 import prisma from "../../../../lib/prisma";
 
 // Método POST
