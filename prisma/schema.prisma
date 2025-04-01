@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  idUsuario      Int      @id @default(autoincrement())
+  nombre         String
+  correo         String   @unique
+  contraseña     String
+  fechaRegistro  DateTime @default(now())
+  @@map ("usuario")
+}
+
+model Ejercicio {
+  idEjercicio     Int      @id @default(autoincrement())
+  idNivel         Int
+  pregunta        String
+  respuestaCorrecta String
+  opciones        String
+  @@map ("ejercicio")
+}
+
+model LogroRecompensa {
+  idRecompensa    Int      @id @default(autoincrement())
+  nombre          String
+  descripcion     String
+  puntos          Int
+
+  @@map ("logro_recompensa")
+}
+
+
+model Nivel {
+  idNivel         Int      @id @default(autoincrement())
+  categoria       String
+  nivel           Int
+  @@map ("nivel")
+}
+
+model Progreso {
+  idProgreso      Int      @id @default(autoincrement())
+  idUsuario       Int
+  idNivel         Int
+  completado      Boolean  @default(false)
+  @@map ("progreso")
+}
+
+model Respuesta {
+  idRespuesta     Int      @id @default(autoincrement())
+  idUsuario       Int
+  idEjercicio     Int
+  respuestaUsuario String
+  esCorrecta      Boolean
+  @@map ("respuesta")
+}
+
+model UsuarioLogro {
+  idLogro         Int      @id @default(autoincrement())
+  idUsuario       Int
+  idRecompensa    Int
+  fechaObtenido   DateTime @default(now())
+  @@map  ("usuario_logro")
+
+}
+
