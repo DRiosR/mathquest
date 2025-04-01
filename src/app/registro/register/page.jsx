@@ -61,7 +61,7 @@ const Register = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 bg-gray-800 rounded-3xl shadow-lg">
         <h2 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-6">
-          ¡Bienvenido a MathZone!
+          ¡Bienvenido a MathZone !
         </h2>
 
         {error && (
