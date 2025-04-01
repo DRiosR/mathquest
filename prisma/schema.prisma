@@ -15,10 +15,11 @@ datasource db {
 
 model Usuario {
   idUsuario      Int      @id @default(autoincrement())
-  nombre         String
+  usuario        String   @unique  
   correo         String   @unique
-  contraseña     String
+  password       String
   fechaRegistro  DateTime @default(now())
+  verificacion   Boolean  @default(false)
   @@map ("usuario")
 }
 

@@ -6,29 +6,32 @@ import { useRouter } from "next/navigation";
 const Register = () => {
   const [nombre, setNombre] = useState("");
   const [correo, setCorreo] = useState("");
-  const [contraseña, setContraseña] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isVerifying, setIsVerifying] = useState(false); // Para mostrar el modal de verificación
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Verificación de la contraseña
-    if (contraseña.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres");
+    if (password.length < 6) {
+      setError("La contraseña debe tener al menos 6 caracteres.");
       return;
     }
 
     // Validación de correo electrónico
     const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!isValidEmail.test(correo)) {
-      setError("Por favor, ingresa un correo electrónico válido.");
+      setError("Por favor ingresa un correo electrónico válido.");
       return;
     }
 
-    const data = { nombre, correo, contraseña };
+    const data = { nombre, correo, password };
 
     try {
+      setIsVerifying(true); // Mostrar la verificación
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -38,13 +41,19 @@ const Register = () => {
       });
 
       if (res.ok) {
-        router.push("/registro/login");
+        const result = await res.json();
+        setSuccessMessage(result.message);  // Mensaje de éxito
+        setTimeout(() => {
+          router.push("/registro/login");  // Redirigir al login después de 2 segundos
+        }, 2000);
       } else {
         const result = await res.json();
-        setError(result.message || "Hubo un error en el registro");
+        setError(result.message || "Hubo un error durante el registro.");
       }
     } catch (err) {
-      setError("Error de conexión. Intenta más tarde.");
+      setError("Error de conexión. Intenta nuevamente más tarde.");
+    } finally {
+      setIsVerifying(false); // Ocultar el modal de verificación
     }
   };
 
@@ -58,6 +67,22 @@ const Register = () => {
         {error && (
           <div className="bg-red-500 text-white p-3 rounded-md mb-6">
             {error}
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="bg-green-500 text-white p-3 rounded-md mb-6">
+            {successMessage}
+          </div>
+        )}
+
+        {isVerifying && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg text-center w-1/3">
+              <h2 className="text-xl font-bold mb-4">¡Verificación de correo!</h2>
+              <p>Por favor, revisa tu correo electrónico para verificar tu cuenta.</p>
+              <div className="mt-4 border-t-4 border-t-blue-500 border-b-transparent border-r-transparent border-l-transparent w-12 h-12 rounded-full animate-spin mx-auto"></div>
+            </div>
           </div>
         )}
 
@@ -79,7 +104,7 @@ const Register = () => {
 
           <div className="mb-4">
             <label className="block text-xl font-medium mb-2" htmlFor="correo">
-              Correo electrónico
+              Dirección de correo electrónico
             </label>
             <input
               type="email"
@@ -93,41 +118,27 @@ const Register = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-xl font-medium mb-2" htmlFor="contraseña">
+            <label className="block text-xl font-medium mb-2" htmlFor="password">
               Contraseña
             </label>
             <input
               type="password"
-              id="contraseña"
-              name="contraseña"
+              id="password"
+              name="password"
               className="w-full px-4 py-3 text-lg rounded-lg bg-gray-700 text-white border-2 border-transparent focus:ring-2 focus:ring-green-400 focus:border-transparent"
-              value={contraseña}
-              onChange={(e) => setContraseña(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-green-400 text-white font-bold rounded-lg transform transition-all duration-500 hover:scale-105"
+            className="w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-green-400 text-white font-bold rounded-lg"
           >
-            Crear cuenta
+            Registrarse
           </button>
         </form>
-
-        <p className="text-center mt-6 text-gray-300">
-          ¿Ya tienes cuenta?{" "}
-          <a href="/registro/login" className="text-blue-400 hover:underline font-semibold">
-            Inicia sesión aquí
-          </a>
-        </p>
-
-        {/* Icono matemático */}
-        <div className="absolute bottom-8 left-8 text-6xl opacity-30">
-          <span className="text-yellow-400">∑</span>
-          <span className="text-green-500">√</span>
-          <span className="text-pink-500">∞</span>
-        </div>
       </div>
     </div>
   );
