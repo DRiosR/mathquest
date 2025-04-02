@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { prisma } from "@/lib/prisma"; // Importación corregida
+import { prisma } from "@/lib/prisma"; 
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
@@ -16,14 +16,14 @@ export async function POST(req) {
     });
 
     // Registrar el usuario en Supabase
-    const { error: supabaseError } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: correo,
       password: password,
     });
 
-    if (supabaseError) {
+    if (error) {
       return NextResponse.json(
-        { message: supabaseError.message },
+        { message: error.message },
         { status: 400 }
       );
     }
