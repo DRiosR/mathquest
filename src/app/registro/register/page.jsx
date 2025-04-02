@@ -139,6 +139,15 @@ const Register = () => {
             Registrarse
           </button>
         </form>
+
+        <div className="mt-4 text-center">
+          <button
+            onClick={() => router.push("/registro/login")}
+            className="w-full py-3 mt-4 bg-gray-600 text-white font-bold rounded-lg"
+          >
+            Regresar al login
+          </button>
+        </div>
       </div>
     </div>
   );
