@@ -11,15 +11,19 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    try {
-      const session = supabase.auth.session(); // Comprobar si hay sesión activa con Supabase
-      console.log("Session: ", session); // Verificar que session esté correctamente obtenida
-      if (session) {
-        router.push("/home"); // Si ya está logueado, redirigir a home
+    // Cambia session() a getSession()
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        console.log("Session: ", session); // Verificar que session esté correctamente obtenida
+        if (session) {
+          router.push("/home"); // Si ya está logueado, redirigir a home
+        }
+      } catch (error) {
+        console.error("Error al verificar sesión:", error);
       }
-    } catch (error) {
-      console.error("Error al verificar sesión:", error);
-    }
+    };
+    checkSession();
   }, [router]);
 
   const handleSubmit = async (e) => {

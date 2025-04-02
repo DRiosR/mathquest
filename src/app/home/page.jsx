@@ -1,28 +1,53 @@
-"use client";
+"use client"; 
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase"; // Verifica si este import es necesario
+import { supabase } from "@/lib/supabase"; // Asegúrate de que supabase esté importado correctamente
 
 const Home = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true); // Estado de carga para controlar la redirección
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Para manejar errores
 
   useEffect(() => {
-    const session = supabase.auth.session(); // Verifica si hay sesión activa
-    console.log("Session en Home: ", session); // Verifica si session se obtiene correctamente
+    const checkSession = async () => {
+      try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          setError("Hubo un error al obtener la sesión.");
+          console.error("Error al obtener sesión:", error);
+          router.push("/registro/login"); // Redirigir al login si no hay sesión
+          return;
+        }
 
-    if (!session) {
-      router.push("/registro/login"); // Si no hay sesión, redirige al login
-    } else {
-      setLoading(false); // Si hay sesión, dejar de mostrar la pantalla de carga
-    }
+        if (!session) {
+          router.push("/registro/login"); // Si no hay sesión, redirigir
+        } else {
+          setLoading(false); // Si hay sesión, continúa cargando la página
+        }
+      } catch (error) {
+        setError("Hubo un error inesperado.");
+        console.error("Error al verificar la sesión:", error);
+        router.push("/registro/login");
+      }
+    };
+
+    checkSession();
   }, [router]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-        <p>Cargando...</p>
+        <p>Cargando...</p> {/* Muestra un mensaje de carga mientras se verifica la sesión */}
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+        <p>{error}</p> {/* Muestra el error si hay algún problema */}
       </div>
     );
   }
