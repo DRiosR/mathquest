@@ -47,7 +47,7 @@ export async function POST(req) {
         id: data.user.id,
         email: data.user.email,
       },
-      access_token: data.access_token, // Enviar el token de acceso
+      access_token: data.access_token, // Puedes enviar el token si lo necesitas
     }),
     { status: 200 }
   );
