@@ -10,6 +10,7 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isVerifying, setIsVerifying] = useState(false); // Para mostrar el modal de verificación
+  const [isLoading, setIsLoading] = useState(false); // Para mostrar indicador de carga al hacer submit
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -31,7 +32,9 @@ const Register = () => {
     const data = { nombre, correo, password };
 
     try {
-      setIsVerifying(true); // Mostrar la verificación
+      setIsLoading(true); // Mostrar indicador de carga al enviar el formulario
+      setIsVerifying(true); // Mostrar la verificación de correo
+
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
@@ -53,6 +56,7 @@ const Register = () => {
     } catch (err) {
       setError("Error de conexión. Intenta nuevamente más tarde.");
     } finally {
+      setIsLoading(false); // Ocultar el indicador de carga
       setIsVerifying(false); // Ocultar el modal de verificación
     }
   };
@@ -135,8 +139,9 @@ const Register = () => {
           <button
             type="submit"
             className="w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-green-400 text-white font-bold rounded-lg"
+            disabled={isLoading}  // Deshabilitar botón mientras se procesa el registro
           >
-            Registrarse
+            {isLoading ? "Cargando..." : "Registrarse"}
           </button>
         </form>
 
