@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import prisma from "@/lib/prisma"; // Importación corregida
+import { prisma } from "@/lib/prisma"; // Importación corregida
 import bcrypt from "bcryptjs"; // Para encriptar la contraseña
 
 // Método POST
