@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext"; // Importar el contexto de autenticación
+import { useAuth } from "@/lib/AuthContext"; // Importar el contexto de autenticación
 import { supabase } from "@/lib/supabase"; // Importar Supabase
 
 const Home = () => {
