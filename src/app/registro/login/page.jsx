@@ -2,40 +2,35 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/AuthContext"; // Importa el contexto de autenticación
+import { supabase } from "@/lib/supabase"; // Asegúrate de tener esta importación
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const { session } = useAuth(); // Obtén la sesión desde el contexto
   const router = useRouter();
 
   useEffect(() => {
+    const session = supabase.auth.session(); // Comprobar si hay sesión activa con Supabase
     if (session) {
-      router.push("/home"); // Redirigir a home si ya está logueado
+      router.push("/home"); // Si ya está logueado, redirigir a home
     }
-  }, [session, router]);
+  }, [router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = { correo, password };
-
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      // Intentar iniciar sesión con Supabase
+      const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        email: correo,
+        password: password,
       });
 
-      if (res.ok) {
-        router.push("/home"); // Redirige al home al iniciar sesión correctamente
+      if (loginError || !data) {
+        setError(loginError.message || "Hubo un error al iniciar sesión");
       } else {
-        const result = await res.json();
-        setError(result.message || "Hubo un error en el inicio de sesión");
+        router.push("/home"); // Redirigir a home al iniciar sesión correctamente
       }
     } catch (err) {
       setError("Error de conexión. Intenta más tarde.");
