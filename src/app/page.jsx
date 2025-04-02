@@ -1,16 +1,25 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext"; // Asegúrate de importar el AuthContext
 
 export default function HomePage() {
   const router = useRouter();
+  const { session } = useAuth(); // Usa el contexto de autenticación
+  const [loading, setLoading] = useState(true); // Para evitar redirigir antes de tiempo
 
   useEffect(() => {
-    const token = localStorage.getItem("token"); // Simula autenticación
-    if (!token) {
-      router.push("/registro/login"); // Redirige al login si no hay sesión
-    }
-  }, []);
+    if (session === undefined) return; // Esperar a que AuthContext cargue la sesión
 
-  return <p>Redirigiendo...</p>;
+    if (!session) {
+      router.push("/registro/login"); // Si no hay sesión, ir a login
+    } else {
+      router.push("/home"); // Si hay sesión, ir a Home
+    }
+    setLoading(false);
+  }, [session]);
+
+  if (loading) return <p>Cargando...</p>; // Muestra algo mientras espera la sesión
+
+  return null;
 }
