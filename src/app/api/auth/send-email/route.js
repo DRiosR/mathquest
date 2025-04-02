@@ -38,7 +38,7 @@ export async function POST(req) {
     }
 
     // Crear un nuevo usuario en Supabase para autenticación
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: correo,
       password: password,
     });

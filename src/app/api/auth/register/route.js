@@ -11,11 +11,11 @@ export async function POST(req) {
       data: {
         usuario: nombre,
         correo: correo,
-        password: password, // Nota: Asegúrate de hashear la contraseña antes de guardarla
+        password: password, // Asegúrate de hashear la contraseña antes de guardarla
       },
     });
 
-    // Registrar el usuario en Supabase sin usar userData
+    // Registrar el usuario en Supabase
     const { error: supabaseError } = await supabase.auth.signUp({
       email: correo,
       password: password,
