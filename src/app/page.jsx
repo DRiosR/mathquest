@@ -15,7 +15,7 @@ export default function HomePage() {
       router.push("/home");
     } else {
       // Si no está logueado, redirige al login
-      router.push("/login");
+      router.push("/registro/login");
     }
   }, [session, router]);
 
