@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ const Home = () => {
   }, [session, router]);
 
   const handlePlay = () => {
-    router.push("/jugar");
+    router.push("/jugar"); // Redirige a la página de juego
   };
 
   const handleLogout = async () => {

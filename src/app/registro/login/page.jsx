@@ -1,18 +1,26 @@
-"use client";  // Asegúrate de que el componente sea del lado del cliente
+"use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/AuthContext"; // Importa el contexto de autenticación
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
-  const [password, setPassword] = useState("");  // Cambié "contraseña" por "password"
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { session } = useAuth(); // Obtén la sesión desde el contexto
   const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/home"); // Redirigir a home si ya está logueado
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = { correo, password };  // Cambié "contraseña" por "password"
+    const data = { correo, password };
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -24,7 +32,7 @@ const Login = () => {
       });
 
       if (res.ok) {
-        router.push("/home");  // Redirige al home al iniciar sesión correctamente
+        router.push("/home"); // Redirige al home al iniciar sesión correctamente
       } else {
         const result = await res.json();
         setError(result.message || "Hubo un error en el inicio de sesión");
@@ -64,16 +72,16 @@ const Login = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-xl font-medium mb-2" htmlFor="password"> {/* Cambié "contraseña" por "password" */}
+            <label className="block text-xl font-medium mb-2" htmlFor="password">
               Contraseña
             </label>
             <input
               type="password"
-              id="password"  // Cambié "contraseña" por "password"
-              name="password"  // Cambié "contraseña" por "password"
+              id="password"
+              name="password"
               className="w-full px-4 py-3 text-lg rounded-lg bg-gray-700 text-white border-2 border-transparent focus:ring-2 focus:ring-green-400 focus:border-transparent"
-              value={password}  // Cambié "contraseña" por "password"
-              onChange={(e) => setPassword(e.target.value)}  // Cambié "contraseña" por "password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -93,7 +101,6 @@ const Login = () => {
           </a>
         </p>
 
-        {/* Icono matemático */}
         <div className="absolute bottom-8 left-8 text-6xl opacity-30">
           <span className="text-yellow-400">∑</span>
           <span className="text-green-500">√</span>
