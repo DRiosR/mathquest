@@ -36,6 +36,15 @@ const Home = () => {
     checkSession();
   }, [router]);
 
+  const handleSignOut = async () => {
+    try {
+      await supabase.auth.signOut(); // Cerrar la sesión
+      router.push("/registro/login"); // Redirigir a la página de login
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
@@ -56,6 +65,13 @@ const Home = () => {
     <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 text-white">
       <h1 className="text-6xl font-bold">Bienvenido a MathQuest</h1>
       {/* Aquí va el contenido de tu página Home */}
+      
+      <button
+        onClick={handleSignOut}
+        className="mt-6 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+      >
+        Cerrar sesión
+      </button>
     </div>
   );
 };
