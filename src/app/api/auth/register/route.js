@@ -1,10 +1,32 @@
 import { supabase } from "@/lib/supabase";
-import { prisma } from "@/lib/prisma"; 
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
     const { nombre, correo, password } = await req.json();
+
+    // Verificar si el correo electrónico ya está registrado
+    const existingUserByEmail = await prisma.usuario.findUnique({
+      where: { correo },
+    });
+    if (existingUserByEmail) {
+      return NextResponse.json(
+        { message: "El correo electrónico ya está registrado." },
+        { status: 400 }
+      );
+    }
+
+    // Verificar si el nombre de usuario ya está registrado
+    const existingUserByUsername = await prisma.usuario.findUnique({
+      where: { usuario: nombre },
+    });
+    if (existingUserByUsername) {
+      return NextResponse.json(
+        { message: "El nombre de usuario ya está en uso." },
+        { status: 400 }
+      );
+    }
 
     // Crear usuario en la base de datos con Prisma
     await prisma.usuario.create({
