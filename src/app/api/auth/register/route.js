@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { prisma } from "@/lib/prisma";
+import {prisma } from "@/lib/prisma" ;
 
 // Método POST
 export async function POST(req) {
