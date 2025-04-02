@@ -16,14 +16,14 @@ export async function POST(req) {
     });
 
     // Registrar el usuario en Supabase
-    const { error } = await supabase.auth.signUp({
+    const signUpResponse = await supabase.auth.signUp({
       email: correo,
       password: password,
     });
 
-    if (error) {
+    if (signUpResponse.error) {
       return NextResponse.json(
-        { message: error.message },
+        { message: signUpResponse.error.message },
         { status: 400 }
       );
     }
