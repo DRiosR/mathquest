@@ -1,22 +1,23 @@
-"use client";
+// app/page.jsx
+"use client"; // Asegura que este componente se ejecute en el cliente
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/AuthContext"; // Importa el contexto de autenticación
 
 export default function HomePage() {
-  const router = useRouter();
   const { session } = useAuth(); // Obtén la sesión desde el contexto
+  const router = useRouter();
 
   useEffect(() => {
-    if (!session) {
-      // Si no hay sesión, redirigir al login
-      router.push("/login");
+    if (session) {
+      // Si está logueado, redirige al home
+      router.push("/home");
     } else {
-      // Si hay sesión, redirigir a la cuenta del usuario
-      router.push("/cuenta");
+      // Si no está logueado, redirige al login
+      router.push("/login");
     }
   }, [session, router]);
 
-  return <p>Redirigiendo...</p>;
+  return <p>Cargando...</p>; // Mensaje mientras se determina el estado de la sesión
 }
