@@ -13,7 +13,7 @@ export async function POST(req) {
     if (existingUserByEmail) {
       return NextResponse.json(
         { message: "El correo electrónico ya está registrado." },
-        { status: 400 }
+        { status: 400 }  // Código de estado 400 para error de solicitud
       );
     }
 
@@ -24,7 +24,7 @@ export async function POST(req) {
     if (existingUserByUsername) {
       return NextResponse.json(
         { message: "El nombre de usuario ya está en uso." },
-        { status: 400 }
+        { status: 400 }  // Código de estado 400 para error de solicitud
       );
     }
 
@@ -46,12 +46,12 @@ export async function POST(req) {
     if (signUpResponse.error) {
       return NextResponse.json(
         { message: signUpResponse.error.message },
-        { status: 400 }
+        { status: 400 } // Error de supabase
       );
     }
 
     return NextResponse.json({ message: "Usuario registrado con éxito" }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ message: "Error en el servidor" }, { status: 500 });
+    return NextResponse.json({ message: "Error en el servidor", error: error.message }, { status: 500 });
   }
 }
