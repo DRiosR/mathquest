@@ -140,15 +140,15 @@ const Register = () => {
           </button>
         </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-gray-400 text-lg">¿Ya tienes una cuenta?</p>
-          <button
-            onClick={() => router.push("/registro/login")}
-            className="w-full py-3 mt-4 bg-gray-600 text-white font-bold rounded-lg"
+        <p className="text-center mt-6 text-gray-300">
+          ¿Ya tienes cuenta?{" "}
+          <a
+            href="/registro/login"
+            className="text-blue-400 hover:underline font-semibold"
           >
-            Ir al Login
-          </button>
-        </div>
+            Inicia sesión aquí
+          </a>
+        </p>
       </div>
     </div>
   );
