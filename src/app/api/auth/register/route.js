@@ -52,6 +52,8 @@ export async function POST(req) {
 
     return NextResponse.json({ message: "Usuario registrado con éxito" }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ message: "Error en el servidor", error: error.message }, { status: 500 });
+    // Mejorar el manejo de errores para obtener más información
+    console.error("Error en el servidor:", error); // Imprime el error en la consola
+    return NextResponse.json({ message: "Error en el servidor", error: error.message, stack: error.stack }, { status: 500 });
   }
 }
