@@ -1,43 +1,30 @@
-"use client"; 
+"use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase"; // Asegúrate de tener esta importación
+import { supabase } from "@/lib/supabase"; // Verifica si este import es necesario
 
 const Home = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Estado para manejar la autenticación
   const router = useRouter();
+  const [loading, setLoading] = useState(true); // Estado de carga para controlar la redirección
 
   useEffect(() => {
-    // Verificar si hay una sesión activa con Supabase
-    const session = supabase.auth.session();
+    const session = supabase.auth.session(); // Verifica si hay sesión activa
+    console.log("Session en Home: ", session); // Verifica si session se obtiene correctamente
 
     if (!session) {
-      // Si no hay sesión, redirigir al login
-      router.push("/registro/login");
+      router.push("/registro/login"); // Si no hay sesión, redirige al login
     } else {
-      // Si hay sesión, permitir el acceso al Home
-      setIsAuthenticated(true);
+      setLoading(false); // Si hay sesión, dejar de mostrar la pantalla de carga
     }
-
-    // Establecer un listener para el cambio de sesión (cuando el usuario se loguea o desloguea)
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        setIsAuthenticated(true); // Si hay sesión, actualizar el estado
-      } else {
-        setIsAuthenticated(false); // Si no hay sesión, redirigir
-        router.push("/registro/login");
-      }
-    });
-
-    // Limpiar el listener cuando el componente se desmonta
-    return () => {
-      authListener?.unsubscribe();
-    };
   }, [router]);
 
-  if (!isAuthenticated) {
-    return <div>Loading...</div>; // Mostrar loading mientras se verifica la autenticación
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+        <p>Cargando...</p>
+      </div>
+    );
   }
 
   return (
