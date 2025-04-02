@@ -11,9 +11,14 @@ const Login = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const session = supabase.auth.session(); // Comprobar si hay sesión activa con Supabase
-    if (session) {
-      router.push("/home"); // Si ya está logueado, redirigir a home
+    try {
+      const session = supabase.auth.session(); // Comprobar si hay sesión activa con Supabase
+      console.log("Session: ", session); // Verificar que session esté correctamente obtenida
+      if (session) {
+        router.push("/home"); // Si ya está logueado, redirigir a home
+      }
+    } catch (error) {
+      console.error("Error al verificar sesión:", error);
     }
   }, [router]);
 
@@ -34,6 +39,7 @@ const Login = () => {
       }
     } catch (err) {
       setError("Error de conexión. Intenta más tarde.");
+      console.error("Error de conexión: ", err); // Para que puedas ver detalles del error
     }
   };
 
