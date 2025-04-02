@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
-import {prisma } from "@/lib/prisma" ;
+import prisma from "@/lib/prisma"; // Importación corregida
+import bcrypt from "bcryptjs"; // Para encriptar la contraseña
 
 // Método POST
 export async function POST(req) {
@@ -46,12 +47,15 @@ export async function POST(req) {
       return new Response(JSON.stringify({ message: error.message }), { status: 400 });
     }
 
+    // Encriptar la contraseña antes de guardarla en la base de datos
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Crear el usuario en Prisma (en la tabla `Usuario`)
     await prisma.usuario.create({
       data: {
         usuario: nombre,
         correo: correo,
-        password: password, // Considera encriptar la contraseña antes de guardarla
+        password: hashedPassword, // Guardamos la contraseña encriptada
         verificacion: false, // La verificación es falsa al principio
       },
     });
