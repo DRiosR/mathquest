@@ -1,5 +1,3 @@
-// src/app/registro/login/page.jsx
-
 "use client";  // Asegúrate de que el componente sea del lado del cliente
 
 import React, { useState } from "react";
@@ -7,14 +5,14 @@ import { useRouter } from "next/navigation";
 
 const Login = () => {
   const [correo, setCorreo] = useState("");
-  const [contraseña, setContraseña] = useState("");
+  const [password, setPassword] = useState("");  // Cambié "contraseña" por "password"
   const [error, setError] = useState(null);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = { correo, contraseña };
+    const data = { correo, password };  // Cambié "contraseña" por "password"
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -66,16 +64,16 @@ const Login = () => {
           </div>
 
           <div className="mb-6">
-            <label className="block text-xl font-medium mb-2" htmlFor="contraseña">
+            <label className="block text-xl font-medium mb-2" htmlFor="password"> {/* Cambié "contraseña" por "password" */}
               Contraseña
             </label>
             <input
               type="password"
-              id="contraseña"
-              name="contraseña"
+              id="password"  // Cambié "contraseña" por "password"
+              name="password"  // Cambié "contraseña" por "password"
               className="w-full px-4 py-3 text-lg rounded-lg bg-gray-700 text-white border-2 border-transparent focus:ring-2 focus:ring-green-400 focus:border-transparent"
-              value={contraseña}
-              onChange={(e) => setContraseña(e.target.value)}
+              value={password}  // Cambié "contraseña" por "password"
+              onChange={(e) => setPassword(e.target.value)}  // Cambié "contraseña" por "password"
               required
             />
           </div>
@@ -105,7 +103,5 @@ const Login = () => {
     </div>
   );
 };
-
-
 
 export default Login;
