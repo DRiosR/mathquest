@@ -15,7 +15,7 @@ export async function POST(req) {
       },
     });
 
-    // Registrar el usuario en Supabase
+    // Registrar el usuario en Supabase sin usar userData
     const { error: supabaseError } = await supabase.auth.signUp({
       email: correo,
       password: password,
