@@ -15,45 +15,57 @@ datasource db {
 
 model Usuario {
   idUsuario      Int      @id @default(autoincrement())
-  usuario         String  @unique
+  usuario        String   @unique
   correo         String   @unique
-  password     String
+  password       String
   fechaRegistro  DateTime @default(now())
-  @@map ("usuario")
+  @@map("usuario")
+}
+
+model Categoria {
+  idCategoria     Int      @id @default(autoincrement())
+  nombre          String
+  descripcion     String
+  niveles         Nivel[]  // Relación con los niveles
+  @@map("categoria")
+}
+
+model Nivel {
+  idNivel       Int       @id @default(autoincrement())
+  idCategoria   Int       // Relación con la tabla Categoria
+  categoria     String
+  nivel         Int
+  categoriaRel  Categoria @relation(fields: [idCategoria], references: [idCategoria]) // Relación con la categoría
+  ejercicios    Ejercicio[] // Relación con los ejercicios
+  @@map("nivel")
 }
 
 model Ejercicio {
-  idEjercicio     Int      @id @default(autoincrement())
-  idNivel         Int
-  pregunta        String
+  idEjercicio   Int      @id @default(autoincrement())
+  idNivel       Int      // Relación con la tabla Nivel
+  pregunta      String
   respuestaCorrecta String
-  opciones        String
-  @@map ("ejercicio")
+  opciones      String
+  nivel         Nivel    @relation(fields: [idNivel], references: [idNivel]) // Relación con el nivel
+  @@map("ejercicio")
 }
+
 
 model LogroRecompensa {
   idRecompensa    Int      @id @default(autoincrement())
   nombre          String
   descripcion     String
   puntos          Int
-
-  @@map ("logro_recompensa")
+  @@map("logro_recompensa")
 }
 
-
-model Nivel {
-  idNivel         Int      @id @default(autoincrement())
-  categoria       String
-  nivel           Int
-  @@map ("nivel")
-}
 
 model Progreso {
   idProgreso      Int      @id @default(autoincrement())
   idUsuario       Int
   idNivel         Int
   completado      Boolean  @default(false)
-  @@map ("progreso")
+  @@map("progreso")
 }
 
 model Respuesta {
@@ -62,7 +74,7 @@ model Respuesta {
   idEjercicio     Int
   respuestaUsuario String
   esCorrecta      Boolean
-  @@map ("respuesta")
+  @@map("respuesta")
 }
 
 model UsuarioLogro {
@@ -70,7 +82,5 @@ model UsuarioLogro {
   idUsuario       Int
   idRecompensa    Int
   fechaObtenido   DateTime @default(now())
-  @@map  ("usuario_logro")
-
+  @@map("usuario_logro")
 }
-
