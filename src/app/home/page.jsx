@@ -24,7 +24,7 @@ const Home = () => {
         if (!session) {
           router.push("/registro/login");
         } else {
-          setLoading(false);
+          setTimeout(() => setLoading(false), 500); // 0.5 segundos de carga
         }
       } catch (error) {
         setError("Hubo un error inesperado.");
@@ -48,12 +48,12 @@ const Home = () => {
   const handlePlay = () => {
     router.push("/categorias"); // Redirige a la página de niveles
   };
-  
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
-        <p>Cargando...</p>
+      <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white flex-col">
+        <img src="/Company.png" alt="Logo" className="w-32 h-32 mb-4 animate__animated animate__fadeIn" />
+        <p className="text-white text-4xl font-extrabold mt-4 text-center tracking-widest">MTK CORP</p>
       </div>
     );
   }

@@ -57,7 +57,7 @@ const Categorias = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-r from-blue-500 to-green-400 text-white p-6">
+    <div className="flex flex-col justify-center items-center min-h-screen bg-gray-900 text-white p-6">
       {loading ? (
         <div className="flex justify-center items-center h-full flex-col">
           <img src="/Company.png" alt="Logo" className="w-32 h-32 mb-4 animate__animated animate__fadeIn" />
