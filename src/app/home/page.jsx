@@ -46,7 +46,7 @@ const Home = () => {
   };
 
   const handlePlay = () => {
-    router.push("/categorias"); // Redirige a la página de niveles
+    router.push("/unidad/categorias"); // Redirige a la página de niveles
   };
 
   if (loading) {

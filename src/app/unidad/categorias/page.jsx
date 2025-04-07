@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase"; // Asegúrate de que esto esté correctamente apuntando a tu archivo de configuración de Supabase
-import { FaPlus, FaMinus, FaTimes, FaDivide } from "react-icons/fa"; // Iconos para las categorías
+import { supabase } from "@/lib/supabase";
+import { FaPlus, FaMinus, FaTimes, FaDivide } from "react-icons/fa";
 
 const Categorias = () => {
   const router = useRouter();
@@ -16,14 +16,14 @@ const Categorias = () => {
       try {
         const { data, error } = await supabase
           .from("categoria")
-          .select("*");  // Obtenemos todas las categorías (ajustar según tu base de datos)
+          .select("*");
 
         if (error) {
           throw new Error(`Error en la consulta: ${error.message}`);
         }
 
         if (data) {
-          setCategorias(data);  // Asignamos las categorías a la variable de estado
+          setCategorias(data);
         } else {
           setError("No se encontraron categorías.");
         }
@@ -37,8 +37,7 @@ const Categorias = () => {
 
     setTimeout(() => {
       fetchCategorias();
-    }, 500); // Retraso de 0.5 segundos antes de hacer la solicitud
-
+    }, 500);
   }, []);
 
   const getCategoryIcon = (name) => {
@@ -47,9 +46,9 @@ const Categorias = () => {
         return <FaPlus size={40} className="text-yellow-400" />;
       case "resta":
         return <FaMinus size={40} className="text-red-400" />;
-      case "multiplicación":
+      case "multiplicacion":
         return <FaTimes size={40} className="text-green-400" />;
-      case "división":
+      case "division":
         return <FaDivide size={40} className="text-blue-400" />;
       default:
         return null;
@@ -69,13 +68,13 @@ const Categorias = () => {
             Elige una categoría
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
-            {categorias.length === 0 ? (
+            {categorias && categorias.length === 0 ? (
               <p className="text-center text-lg">No se encontraron categorías.</p>
             ) : (
               categorias.map((categoria) => (
                 <div key={categoria.idCategoria} className="flex justify-center">
                   <button
-                    onClick={() => router.push(`/niveles/${categoria.nombre.toLowerCase()}`)}
+                    onClick={() => router.push(`/unidad/${categoria.nombre.toLowerCase()}/nivel`)}
                     className="w-full p-6 bg-indigo-600 text-white rounded-lg text-xl font-semibold shadow-lg transform transition duration-300 ease-in-out hover:bg-indigo-700 hover:scale-105 flex items-center justify-center"
                   >
                     <div className="flex flex-col items-center">
@@ -87,8 +86,17 @@ const Categorias = () => {
               ))
             )}
           </div>
+
+          {/* Botón para volver al Home */}
+          <button
+            onClick={() => router.push("/")}
+            className="mt-10 px-6 py-3 bg-green-600 text-white rounded-lg text-xl font-semibold hover:bg-green-700 transition duration-300 ease-in-out"
+          >
+            Volver al Home
+          </button>
         </>
       )}
+
       {error && (
         <div className="text-red-500 mt-4 text-xl">
           {error}

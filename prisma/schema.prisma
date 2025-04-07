@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Usuario {
-  idUsuario      Int      @id @default(autoincrement())
+  idUsuario      String      @id @default(uuid())
   usuario        String   @unique
   correo         String   @unique
   password       String
@@ -27,6 +27,7 @@ model Categoria {
   nombre          String
   descripcion     String
   niveles         Nivel[]  // Relación con los niveles
+  ejercicios    Ejercicio[] // Relación con los ejercicios
   @@map("categoria")
 }
 
@@ -41,15 +42,18 @@ model Nivel {
 }
 
 model Ejercicio {
-  idEjercicio   Int      @id @default(autoincrement())
-  idNivel       Int      // Relación con la tabla Nivel
-  pregunta      String
-  respuestaCorrecta String
-  opciones      String
-  nivel         Nivel    @relation(fields: [idNivel], references: [idNivel]) // Relación con el nivel
+  idEjercicio        Int       @id @default(autoincrement())
+  idNivel            Int
+  idCategoria        Int
+  pregunta           String
+  respuestaCorrecta  String
+  opciones           String
+
+  nivel              Nivel     @relation(fields: [idNivel], references: [idNivel])
+  Categoria          Categoria @relation(fields: [idCategoria], references: [idCategoria])
+
   @@map("ejercicio")
 }
-
 
 model LogroRecompensa {
   idRecompensa    Int      @id @default(autoincrement())
@@ -61,25 +65,33 @@ model LogroRecompensa {
 
 
 model Progreso {
-  idProgreso      Int      @id @default(autoincrement())
-  idUsuario       Int
-  idNivel         Int
-  completado      Boolean  @default(false)
+  idProgreso       Int     @id @default(autoincrement())
+  idUsuario        String                                  
+  idNivel          Int
+  completado       Boolean @default(false)  // Si el nivel ha sido completado
+  respuestasCorrectas Int // Número de respuestas correctas en este nivel
+  totalRespuestas   Int    // Total de respuestas del nivel
+  nivelDesbloqueado Boolean @default(false) // Si el siguiente nivel ha sido desbloqueado
   @@map("progreso")
 }
 
+
 model Respuesta {
-  idRespuesta     Int      @id @default(autoincrement())
-  idUsuario       Int
-  idEjercicio     Int
-  respuestaUsuario String
-  esCorrecta      Boolean
+  idRespuesta   Int     @id @default(autoincrement())
+  idUsuario     String
+  idEjercicio   Int
+  idNivel       Int
+  idCategoria   String  
+  esCorrecta    Boolean
+
   @@map("respuesta")
 }
 
+
+
 model UsuarioLogro {
   idLogro         Int      @id @default(autoincrement())
-  idUsuario       Int
+  idUsuario       String                                  
   idRecompensa    Int
   fechaObtenido   DateTime @default(now())
   @@map("usuario_logro")

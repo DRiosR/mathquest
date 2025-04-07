@@ -9,10 +9,8 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [showError, setShowError] = useState(true); // Estado para controlar la visibilidad del error
-  const [showSuccess, setShowSuccess] = useState(true); // Estado para controlar la visibilidad del mensaje de éxito
+  const [isVerifying, setIsVerifying] = useState(false); // Para mostrar el modal de verificación
+  const [isLoading, setIsLoading] = useState(false); // Para mostrar indicador de carga al hacer submit
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -21,8 +19,6 @@ const Register = () => {
     // Verificación de la contraseña
     if (password.length < 6) {
       setError("La contraseña debe tener al menos 6 caracteres.");
-      setShowError(true); // Mostrar la alerta de error
-      setTimeout(() => setShowError(false), 5000); // Desaparecer después de 5 segundos
       return;
     }
 
@@ -30,16 +26,14 @@ const Register = () => {
     const isValidEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA0-9]{2,}$/;
     if (!isValidEmail.test(correo)) {
       setError("Por favor ingresa un correo electrónico válido.");
-      setShowError(true); // Mostrar la alerta de error
-      setTimeout(() => setShowError(false), 5000); // Desaparecer después de 5 segundos
       return;
     }
 
     const data = { nombre, correo, password };
 
     try {
-      setIsLoading(true);
-      setIsVerifying(false);
+      setIsLoading(true); // Mostrar indicador de carga al enviar el formulario
+      setIsVerifying(false); // Asegurarse de que no esté mostrando el modal de verificación al comenzar
 
       const res = await fetch("/api/auth/register", {
         method: "POST",
@@ -52,27 +46,32 @@ const Register = () => {
       if (res.ok) {
         const result = await res.json();
         setSuccessMessage("Se ha enviado un correo de verificación, por favor verifica tu correo.");
-        setShowSuccess(true); // Mostrar la alerta de éxito
-        setTimeout(() => setShowSuccess(false), 5000); // Desaparecer después de 5 segundos
-        setIsVerifying(true);
+        setIsVerifying(true); // Mostrar el mensaje de verificación solo si el registro es exitoso
 
+        // Aquí iniciamos un setTimeout para que el mensaje de éxito se cierre después de 10 segundos
         setTimeout(() => {
-          setIsVerifying(false);
-        }, 5000);
+          setIsVerifying(false); // Ocultar el modal después de 10 segundos
+        }, 10000); // 10 segundos para la alerta verde de confirmación
       } else {
         const result = await res.json();
         setError(result.message || "Hubo un error durante el registro.");
-        setShowError(true); // Mostrar la alerta de error
-        setTimeout(() => setShowError(false), 5000); // Desaparecer después de 5 segundos
-        setIsVerifying(false);
+        setIsVerifying(false); // Si hay un error, ocultamos el mensaje de verificación
+
+        // Aquí iniciamos un setTimeout para que el mensaje de error se cierre después de 5 segundos
+        setTimeout(() => {
+          setError(null); // Ocultar el mensaje de error después de 5 segundos
+        }, 5000); // 5 segundos para la alerta de error
       }
     } catch (err) {
       setError("Error de conexión. Intenta nuevamente más tarde.");
-      setShowError(true); // Mostrar la alerta de error
-      setTimeout(() => setShowError(false), 5000); // Desaparecer después de 5 segundos
-      setIsVerifying(false);
+      setIsVerifying(false); // Si hay error de conexión, también quitamos el mensaje de verificación
+
+      // Aquí iniciamos un setTimeout para que el mensaje de error se cierre después de 5 segundos
+      setTimeout(() => {
+        setError(null); // Ocultar el mensaje de error después de 5 segundos
+      }, 5000); // 5 segundos para la alerta de error
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Ocultar el indicador de carga
     }
   };
 
@@ -80,17 +79,17 @@ const Register = () => {
     <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
       <div className="w-full max-w-md p-8 bg-gray-800 rounded-3xl shadow-lg">
         <h2 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500 mb-6">
-          ¡Bienvenido a MathZone!
+          ¡Bienvenido a MathZone !
         </h2>
 
-        {error && showError && (
-          <div className="bg-red-500 text-white p-3 rounded-md mb-6 transition-all transform duration-500 ease-out translate-y-4 opacity-100">
+        {error && (
+          <div className="bg-red-500 text-white p-3 rounded-md mb-6">
             {error}
           </div>
         )}
 
-        {successMessage && showSuccess && (
-          <div className="bg-green-500 text-white p-3 rounded-md mb-6 transition-all transform duration-500 ease-out translate-y-4 opacity-100">
+        {successMessage && (
+          <div className="bg-green-500 text-white p-3 rounded-md mb-6">
             {successMessage}
           </div>
         )}

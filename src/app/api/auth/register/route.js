@@ -3,6 +3,35 @@ import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 
+// Función para reintentar el registro en Supabase
+async function retrySignUp(email, password, attempts = 3) {
+  let attempt = 0;
+  let error = null;
+
+  while (attempt < attempts) {
+    const { error: signupError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (!signupError) {
+      return null; // Registro exitoso
+    }
+    
+    // Si hay un error y excedemos el límite de correos, esperamos antes de intentar nuevamente
+    if (signupError.code === 'over_email_send_rate_limit') {
+      console.log(`Reintento ${attempt + 1} debido a límite de correos.`);
+      // Espera 10 segundos entre reintentos
+      await new Promise(resolve => setTimeout(resolve, 10000)); 
+    }
+
+    error = signupError;
+    attempt++;
+  }
+
+  return error; // Devuelve el último error
+}
+
 export async function POST(req) {
   try {
     const { nombre, correo, password } = await req.json();
@@ -56,11 +85,8 @@ export async function POST(req) {
       );
     }
 
-    // **Crear usuario en Supabase**
-    const { error: signupError } = await supabase.auth.signUp({
-      email: correo,
-      password: password,
-    });
+    // **Intentar registrar al usuario en Supabase**
+    const signupError = await retrySignUp(correo, password);
 
     if (signupError) {
       console.error("❌ Error en Supabase SignUp:", signupError);
